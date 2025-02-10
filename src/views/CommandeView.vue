@@ -1,94 +1,4 @@
-<template>
-    <div>
-      <h1>Gestion des Commandes</h1>
-  
-      <!-- Formulaire pour ajouter une commande -->
-      <form @submit.prevent="addCommande">
-        <div>
-          <label for="iduser">User ID</label>
-          <input v-model="iduser" id="iduser" type="number" placeholder="User ID" required />
-        </div>
-        <div>
-          <label for="dateheurecommande">Date et Heure de la Commande</label>
-          <input v-model="dateheurecommande" id="dateheurecommande" type="datetime-local" required />
-        </div>
-        <div>
-          <label for="totaleprice">Prix Total</label>
-          <input v-model.number="totaleprice" id="totaleprice" type="number" placeholder="Prix Total" required />
-        </div>
-        <div>
-          <label for="paiementcheck">Paiement Confirmé</label>
-          <input v-model="paiementcheck" id="paiementcheck" type="checkbox" />
-        </div>
-        <div>
-          <label for="isready">Prête</label>
-          <input v-model="isready" id="isready" type="checkbox" />
-        </div>
-        <div>
-          <label for="issend">Envoyée</label>
-          <input v-model="issend" id="issend" type="checkbox" />
-        </div>
-        <div>
-          <label for="idplats">Plats</label>
-          <select v-model="selectedPlats" multiple>
-            <option v-for="plat in plats" :key="plat.id" :value="plat.id">
-              {{ plat.nom }}
-            </option>
-          </select>
-        </div>
-        <button type="submit">Ajouter Commande</button>
-      </form>
-  
-      <!-- Liste des commandes -->
-      <ul>
-        <li v-for="commande in commandes" :key="commande.id">
-          Commande #{{ commande.id }} - User: {{ commande.iduser.nom }} - Total: {{ commande.totaleprice }}€
-          <button @click="selectCommande(commande)">Modifier</button>
-          <button @click="deleteCommande(commande.id)">Supprimer</button>
-        </li>
-      </ul>
-  
-      <!-- Formulaire de modification -->
-      <div v-if="selectedCommande">
-        <h2>Modifier Commande</h2>
-        <div>
-          <label for="edit-iduser">User ID</label>
-          <input v-model="selectedCommande.iduser.id" id="edit-iduser" type="number" />
-        </div>
-        <div>
-          <label for="edit-dateheurecommande">Date et Heure de la Commande</label>
-          <input v-model="selectedCommande.dateheurecommande" id="edit-dateheurecommande" type="datetime-local" />
-        </div>
-        <div>
-          <label for="edit-totaleprice">Prix Total</label>
-          <input v-model.number="selectedCommande.totaleprice" id="edit-totaleprice" type="number" />
-        </div>
-        <div>
-          <label for="edit-paiementcheck">Paiement Confirmé</label>
-          <input v-model="selectedCommande.paiementcheck" id="edit-paiementcheck" type="checkbox" />
-        </div>
-        <div>
-          <label for="edit-isready">Prête</label>
-          <input v-model="selectedCommande.isready" id="edit-isready" type="checkbox" />
-        </div>
-        <div>
-          <label for="edit-issend">Envoyée</label>
-          <input v-model="selectedCommande.issend" id="edit-issend" type="checkbox" />
-        </div>
-        <div>
-          <label for="edit-idplats">Plats</label>
-          <select v-model="selectedCommande.idplats" multiple>
-            <option v-for="plat in plats" :key="plat.id" :value="plat.id">
-              {{ plat.nom }}
-            </option>
-          </select>
-        </div>
-        <button @click="updateCommande">Mettre à jour</button>
-      </div>
-    </div>
-  </template>
-  
-  <script>
+<script>
   import axios from "axios";
   
   export default {
@@ -212,41 +122,125 @@
   };
   </script>
   
+  <template>
+    <div class="container">
+      <h1 class="title">Gestion des Commandes</h1>
+      
+      <transition name="fade">
+        <form @submit.prevent="addCommande" class="form">
+          <div class="form-group">
+            <label for="iduser">User ID</label>
+            <input v-model="iduser" id="iduser" type="number" placeholder="User ID" required />
+          </div>
+          <div class="form-group">
+            <label for="dateheurecommande">Date et Heure de la Commande</label>
+            <input v-model="dateheurecommande" id="dateheurecommande" type="datetime-local" required />
+          </div>
+          <div class="form-group">
+            <label for="totaleprice">Prix Total</label>
+            <input v-model.number="totaleprice" id="totaleprice" type="number" placeholder="Prix Total" required />
+          </div>
+          <div class="checkbox-group">
+            <label><input v-model="paiementcheck" type="checkbox" /> Paiement Confirmé</label>
+            <label><input v-model="isready" type="checkbox" /> Prête</label>
+            <label><input v-model="issend" type="checkbox" /> Envoyée</label>
+          </div>
+          <div class="form-group">
+            <label for="idplats">Plats</label>
+            <select v-model="selectedPlats" multiple>
+              <option v-for="plat in plats" :key="plat.id" :value="plat.id">
+                {{ plat.nom }}
+              </option>
+            </select>
+          </div>
+          <button type="submit" class="btn">Ajouter Commande</button>
+        </form>
+      </transition>
+      
+      <ul class="commande-list">
+        <transition-group name="fade">
+          <li v-for="commande in commandes" :key="commande.id" class="commande-item">
+            <span>Commande #{{ commande.id }} - User: {{ commande.iduser.nom }} - Total: {{ commande.totaleprice }}€</span>
+            <div>
+              <button @click="selectCommande(commande)" class="btn edit">Modifier</button>
+              <button @click="deleteCommande(commande.id)" class="btn delete">Supprimer</button>
+            </div>
+          </li>
+        </transition-group>
+      </ul>
+    </div>
+  </template>
+  
   <style scoped>
-  /* Add your styles here */
-  form div {
-    margin-bottom: 10px;
+  .container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
-  
+  .title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  .checkbox-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
   input, select {
-    padding: 5px;
-    margin-top: 5px;
     width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
   }
-  
-  button {
-    padding: 8px 16px;
-    background-color: #4CAF50;
-    color: white;
+  .btn {
+    display: inline-block;
+    padding: 10px 15px;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
+    transition: background 0.3s ease-in-out;
   }
-  
-  button:hover {
-    background-color: #45a049;
+  .btn:hover {
+    filter: brightness(1.1);
   }
-  
-  ul {
-    list-style-type: none;
+  .btn.edit {
+    background: #ffcc00;
+    color: #fff;
+  }
+  .btn.delete {
+    background: #ff4444;
+    color: #fff;
+  }
+  .commande-list {
+    list-style: none;
     padding: 0;
   }
-  
-  ul li {
-    margin: 10px 0;
+  .commande-item {
+    background: white;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s ease-in-out;
   }
-  
-  label {
-    font-weight: bold;
+  .commande-item:hover {
+    transform: scale(1.02);
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s;
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
   }
   </style>
+  
   

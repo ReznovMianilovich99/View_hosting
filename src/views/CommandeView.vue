@@ -168,6 +168,38 @@
           </li>
         </transition-group>
       </ul>
+  
+      <transition name="fade">
+        <div v-if="selectedCommande" class="edit-container">
+          <h2>Modifier Commande</h2>
+          <div class="form-group">
+            <label for="edit-iduser">User ID</label>
+            <input v-model="selectedCommande.iduser.id" id="edit-iduser" type="number" />
+          </div>
+          <div class="form-group">
+            <label for="edit-dateheurecommande">Date et Heure de la Commande</label>
+            <input v-model="selectedCommande.dateheurecommande" id="edit-dateheurecommande" type="datetime-local" />
+          </div>
+          <div class="form-group">
+            <label for="edit-totaleprice">Prix Total</label>
+            <input v-model.number="selectedCommande.totaleprice" id="edit-totaleprice" type="number" />
+          </div>
+          <div class="checkbox-group">
+            <label><input v-model="selectedCommande.paiementcheck" type="checkbox" /> Paiement Confirmé</label>
+            <label><input v-model="selectedCommande.isready" type="checkbox" /> Prête</label>
+            <label><input v-model="selectedCommande.issend" type="checkbox" /> Envoyée</label>
+          </div>
+          <div class="form-group">
+            <label for="edit-idplats">Plats</label>
+            <select v-model="selectedCommande.idplats" multiple>
+              <option v-for="plat in plats" :key="plat.id" :value="plat.id">
+                {{ plat.nom }}
+              </option>
+            </select>
+          </div>
+          <button @click="updateCommande" class="btn">Mettre à jour</button>
+        </div>
+      </transition>
     </div>
   </template>
   
@@ -176,14 +208,14 @@
     max-width: 600px;
     margin: 20px auto;
     padding: 20px;
-    background: #f9f9f9;
+    background: #333;
+    color: #fff;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
   .title {
     text-align: center;
     margin-bottom: 20px;
-    color: #333;
   }
   .form-group {
     margin-bottom: 15px;
@@ -198,6 +230,8 @@
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    background: #444;
+    color: white;
   }
   .btn {
     display: inline-block;
@@ -223,7 +257,7 @@
     padding: 0;
   }
   .commande-item {
-    background: white;
+    background: #555;
     padding: 15px;
     margin-bottom: 10px;
     border-radius: 5px;
@@ -235,6 +269,12 @@
   .commande-item:hover {
     transform: scale(1.02);
   }
+  .edit-container {
+    background: #444;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
   .fade-enter-active, .fade-leave-active {
     transition: opacity 0.5s;
   }
@@ -242,5 +282,4 @@
     opacity: 0;
   }
   </style>
-  
   

@@ -1,24 +1,30 @@
 <template>
   <div class="container">
-    <h1>Gestion des Utilisateurs</h1>
+    <h1 class="title">Gestion des Utilisateurs</h1>
     <form @submit.prevent="addUser" class="form">
       <input v-model="newUser.email" placeholder="Email" required />
       <input v-model="newUser.password" type="password" placeholder="Mot de passe" required />
-      <button type="submit">Ajouter</button>
+      <button type="submit" class="btn">Ajouter</button>
     </form>
     <ul class="user-list">
-      <li v-for="user in users" :key="user.id" class="user-item">
-        {{ user.email }}
-        <button @click="selectUser(user)">Modifier</button>
-        <button @click="deleteUser(user.id)">Supprimer</button>
-      </li>
+      <transition-group name="fade">
+        <li v-for="user in users" :key="user.id" class="user-item">
+          <span>{{ user.email }}</span>
+          <div>
+            <button @click="selectUser(user)" class="btn edit">Modifier</button>
+            <button @click="deleteUser(user.id)" class="btn delete">Supprimer</button>
+          </div>
+        </li>
+      </transition-group>
     </ul>
-    <div v-if="selectedUser" class="edit-form">
-      <h2>Modifier Utilisateur</h2>
-      <input v-model="selectedUser.email" />
-      <input v-model="selectedUser.password" type="password" />
-      <button @click="updateUser">Mettre à jour</button>
-    </div>
+    <transition name="fade">
+      <div v-if="selectedUser" class="edit-container">
+        <h2>Modifier Utilisateur</h2>
+        <input v-model="selectedUser.email" />
+        <input v-model="selectedUser.password" type="password" />
+        <button @click="updateUser" class="btn">Mettre à jour</button>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -91,15 +97,17 @@ export default {
 };
 </script>
 
+</script>
+
 <style scoped>
 .container {
   max-width: 600px;
-  margin: auto;
-  text-align: center;
+  margin: 20px auto;
   padding: 20px;
-  background: #f9f9f9;
+  background: #333;
+  color: #fff;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.5s ease-in-out;
 }
 
@@ -136,25 +144,44 @@ export default {
 }
 
 .user-item:hover {
-  background: #e3e3e3;
+  background: #444;
 }
 
-button {
-  background: #007bff;
-  color: white;
+.btn {
+  display: inline-block;
+  padding: 10px 15px;
   border: none;
-  padding: 8px 12px;
   border-radius: 5px;
   cursor: pointer;
   transition: background 0.3s ease-in-out;
 }
 
-button:hover {
-  background: #0056b3;
+.btn:hover {
+  filter: brightness(1.1);
 }
 
-.edit-form {
+.btn.edit {
+  background: #ffcc00;
+  color: #fff;
+}
+
+.btn.delete {
+  background: #ff4444;
+  color: #fff;
+}
+
+.edit-container {
+  background: #444;
+  padding: 20px;
+  border-radius: 5px;
   margin-top: 20px;
   animation: fadeIn 0.5s ease-in-out;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>

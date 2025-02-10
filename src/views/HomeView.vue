@@ -97,8 +97,6 @@ export default {
 };
 </script>
 
-</script>
-
 <style scoped>
 .container {
   max-width: 600px;
